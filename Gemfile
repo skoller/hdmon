@@ -30,8 +30,8 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'bcrypt-ruby'
-gem 'heroku'
+gem 'bcrypt'
+gem 'heroku toolbelt'
 gem 'client_side_validations'
 gem 'twilio-ruby'
 

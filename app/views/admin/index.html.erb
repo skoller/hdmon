@@ -1,0 +1,11 @@
+<h1>ADMIN HOME</h1></br></br>
+
+
+<%= link_to "View Archived Physicians", archived_physicians_path %></br>
+<%= link_to "View Archived Patients", archived_patients_path %></br>
+<%= link_to "View Active Patients", active_patients_path %></br></br></br>
+<h2>List of Physicians by email:</h2></br>
+<% @physicians.each do |ph| %>
+	</br><%= ph.email %>    <%= link_to "View Patients", physician_patients_path(ph) %>   ||  <%= link_to "Archive this Physician", archive_a_physician_path(:physician_id => ph.id) %> </br>
+	<% end %>
+	

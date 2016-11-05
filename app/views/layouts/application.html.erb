@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bulimia</title>	
+  <title>Hdmon</title>	
   <%= javascript_include_tag "application" %>
 	<%= javascript_include_tag :defaults, "rails.validations" %>
   <%= stylesheet_link_tag    "application" %>
@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-	<h1>Bivola</h1>
+	<h1>Hdmon</h1>
 	<% if current_patient %>
 		<p>You are signed in as <%= current_patient.first_name.capitalize + " " + current_patient.last_name.capitalize %></p></br>
 		<%= link_to "Log Out", log_out_path, method: :delete %>

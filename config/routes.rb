@@ -1,4 +1,4 @@
-Bulimia::Application.routes.draw do
+Hdmon::Application.routes.draw do
   
   root :to => 'application#home_page'
   

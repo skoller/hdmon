@@ -1,7 +1,7 @@
 class LogEntriesController < ApplicationController
  
-  before_filter :authenticate_user
-  before_filter :restrict_access_to_relevant_pages
+  before_action :authenticate_user
+  before_action :restrict_access_to_relevant_pages
   
   def index
     if session[:physician_id]

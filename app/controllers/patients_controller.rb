@@ -1,6 +1,6 @@
 class PatientsController < ApplicationController
 
-  before_filter :authenticate_user
+  before_action :authenticate_user
 
   def index
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)

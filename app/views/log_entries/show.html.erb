@@ -1,0 +1,24 @@
+<h2>Log Entry Details</h2>
+<br />
+<table class="table table-bordered table-striped">
+  <tr><th>Day</th><td><%= @log_entry.day %></td></tr>
+  <tr><th>Time</th><td><%= @log_entry.time %></td></tr>
+	<tr><th>Where</th><td><%= @log_entry.location %></td></tr>
+  <tr><th class="food">Food</th><td><%= @log_entry.food %></td></tr>
+  <tr><th>Binge</th><td><%= @log_entry.binge ? "X" : "" %></tr>
+  <tr><th>Vomit</th><td><%= @log_entry.vomit ? "X" : ""%></tr>
+  <tr><th>Laxative</th><td><%= @log_entry.laxative ? "X" : "" %></td></tr>
+  <th>Personal notes</th><td><%= @log_entry.personal_notes %></td></tr>
+</table>
+
+<div class="form-actions">
+  <%= link_to physician_patient_log_entries_path(@ph, @patient) do %>
+    <button class="btn">&lt;&lt; Return to Log</button>
+  <% end %>
+  <%= link_to edit_physician_patient_log_entry_path(@ph, @patient, @log_entry)  do %>
+    <button class="btn btn-warning">Edit this Log Entry</button>
+  <% end %>
+  <%= link_to physician_patient_log_entry_path(@ph, @patient, @log_entry), confirm: 'Are you sure you want to delete this log entry?', method: :delete  do %>
+    <button class="btn btn-danger">Delete this entry</button>
+  <% end %>
+</div>

@@ -1,0 +1,74 @@
+<%= form_for [@ph, @patient, @log_entry], :html => {:class => "form-horizontal" } do |f| %>
+  <legend><%= mode == :edit ? "Edit" : "New" %> Log Entry</legend>
+  <% if @log_entry.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@log_entry.errors.count, "error") %> prohibited this log_entry from being saved:</h2>
+
+      <ul>
+      <% @log_entry.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  
+
+  <div class="control-group">
+    <%= f.label :date, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.hidden_field :date, :value => 5.days.ago %>
+    </div>
+  </div>
+
+	<div class="control-group">
+    <%= f.label :where, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.text_field :location %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :food, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.text_area :food, :rows => 10  %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :binge, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.check_box :binge %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :vomit, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.check_box :vomit %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :laxative, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.check_box :laxative %>
+    </div>
+  </div>
+
+    <div class="control-group">
+    <%= f.label :personal_notes, :class => "control-label" %>
+    <div class= "controls">
+      <%= f.text_area :personal_notes, :rows => 10 %>
+    </div>
+  </div>
+  
+  <div class="form-actions">
+    <% mode == :edit ? button_text = "Save Changes to Log Entry" : button_text = "Save Log Entry" %>
+    <%= f.button button_text, :class => "btn btn-primary" %>
+    <%= link_to physician_patient_log_entry_path(@ph, @patient, @log_entry) do %>
+      <button class="btn" method="get">Cancel</button>
+    <% end %>
+  </div>
+
+<% end %>

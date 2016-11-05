@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Hdmon</title>
-    <%= csrf_meta_tags %>
-
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
-
-  <body>
-    <%= yield %>
-  </body>
+<head>
+  <title>Bulimia</title>	
+  <%= javascript_include_tag "application" %>
+	<%= javascript_include_tag :defaults, "rails.validations" %>
+  <%= stylesheet_link_tag    "application" %>
+  
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<div class="container">
+	<h1>Bivola</h1>
+	<% if current_patient %>
+		<p>You are signed in as <%= current_patient.first_name.capitalize + " " + current_patient.last_name.capitalize %></p></br>
+		<%= link_to "Log Out", log_out_path, method: :delete %>
+	<% elsif current_physician %>
+		<p>You are signed in as <%= current_physician.email %></p></br>
+		<%= link_to "Log Out", log_out_path, method: :delete %></br>
+		<% if (current_physician.id == 1) && (@admin_home == nil) %>
+		<%= link_to "Back to Admin Home", admin_path(current_physician) %>
+		<% end %>
+	<% elsif @no_session_format %>
+	<% end %>
+	<%= yield %>
+</div>
+</body>
 </html>

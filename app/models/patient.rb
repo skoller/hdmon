@@ -1,5 +1,5 @@
 class Patient < ApplicationRecord
-  attr_accessible :phone_number, :password, :password_confirmation, :first_name, :last_name, :dob, :sex, :diagnosis, :archive
+  attr_accessor :phone_number, :password, :password_confirmation, :first_name, :last_name, :dob, :sex, :diagnosis, :archive
    has_secure_password
    validates_presence_of :password, :on => :create
 

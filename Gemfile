@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'bcrypt'
-gem 'heroku toolbelt'
+gem 'heroku'
 gem 'client_side_validations'
 gem 'twilio-ruby'
 

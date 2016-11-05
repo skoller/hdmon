@@ -1,6 +1,6 @@
 class PhysiciansController < ApplicationController
 
-  before_filter :authenticate_user, :except => [:new, :create]
+  before_action :authenticate_user, :except => [:new, :create]
   
   def new
     @physician = Physician.new

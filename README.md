@@ -24,3 +24,4 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+<!--:validate => true do |f|>:validate => true do |f|-->

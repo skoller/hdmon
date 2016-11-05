@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  day: 1
+  food: MyText
+  binge: false
+  vomit: false
+  laxative: false
+  personal_notes: MyText
+  time: MyString
+  created_at: 2016-11-05 15:18:20
+  updated_at: 2016-11-05 15:18:20
+  patient_id: 1
+  date: 2016-11-05 15:18:20
+  convo_handler_id: 1
+  location: MyText
+
+two:
+  day: 1
+  food: MyText
+  binge: false
+  vomit: false
+  laxative: false
+  personal_notes: MyText
+  time: MyString
+  created_at: 2016-11-05 15:18:20
+  updated_at: 2016-11-05 15:18:20
+  patient_id: 1
+  date: 2016-11-05 15:18:20
+  convo_handler_id: 1
+  location: MyText

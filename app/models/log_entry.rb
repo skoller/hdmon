@@ -1,4 +1,4 @@
-class LogEntry < ActiveRecord::Base
+class LogEntry < ApplicationRecord
   belongs_to :patient
   has_one :convo_handler
 
@@ -25,6 +25,5 @@ class LogEntry < ActiveRecord::Base
       return (hour + self.date.to_time.strftime(':%M%p'))
     end
   end
-
-
+  
 end

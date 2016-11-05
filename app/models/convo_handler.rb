@@ -1,4 +1,4 @@
-class ConvoHandler < ActiveRecord::Base
+class ConvoHandler < ApplicationRecord
   belongs_to :patient
   belongs_to :log_entry
   

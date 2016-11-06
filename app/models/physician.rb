@@ -1,5 +1,5 @@
 class Physician < ApplicationRecord
-   attr_accessor :email, :password, :password_confirmation, :first_name, :last_name, :state, :specialty, :arch_id, :archive
+   attr_accessor :email, :password, :password_confirmation, :password_digest, :first_name, :last_name, :state, :specialty, :arch_id, :archive
     has_secure_password
     
     validates_presence_of :first_name, :last_name, :state, :specialty, :on => :update

@@ -1,6 +1,6 @@
 class PhysiciansController < ApplicationController
 
-  before_action :authenticate_user, :except => [:new, :create]
+  before_action :authenticate_user, :except => [:new, :create, :allowed_params]
   
   def new
     @physician = Physician.new
@@ -10,9 +10,10 @@ class PhysiciansController < ApplicationController
   end
 
   def create
-    @physician = Physician.new(params[:physician])
+    @physician = Physician.new(allowed_params)
+    @physician.save
     if @physician.save
-      redirect_to matched_path(params[:physician])
+      redirect_to physician_additional_info_path
       return false
     else
       render 'new'
@@ -20,6 +21,9 @@ class PhysiciansController < ApplicationController
     end
   end
 
+  def allowed_params
+    params.require(:physician).permit(:email, :password, :password_confirmation, :password_digest)
+  end
 
   def physician_account
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)

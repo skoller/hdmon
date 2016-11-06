@@ -1,6 +1,6 @@
 <h1>Physician Sign Up</h1>
 
-<%= form_for @physician, :validate => true do |f|%>
+<%= form_for @physician, :html => {:class => "form-horizontal" } do |f|%>
  
     <% if @physician.errors.any? %>
 	    <div id="error_explanation">
@@ -15,15 +15,15 @@
 	  <% end %>
   
   <p>
-    <%= f.label :email %><br />
+   email
     <%= f.text_field :email %>
   </p>
   <p>
-    <%= f.label :password %><br />
+    password
     <%= f.password_field :password %>
   </p>
   <p>
-    <%= f.label :password_confirmation %><br />
+   password confirmation
     <%= f.password_field :password_confirmation %>
   </p>
   <p class="button"><%= f.submit %></p>

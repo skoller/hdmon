@@ -1,7 +1,14 @@
 class ApplicationController < ActionController::Base
+  # ActionController::Parameters.permit_all_parameters = true
+
   protect_from_forgery with: :exception
+  
    def home_page
       @no_session_format = true
+      @ph = 'physician'
+      @pt = 'patient'
+      session[:identity_ph] = nil
+      session[:identity_pt] = nil
       if session[:physician_id]
         session[:physician_id] = nil
       elsif session[:patient_id]
@@ -73,4 +80,13 @@ class ApplicationController < ActionController::Base
 
     helper_method :current_physician
     helper_method :current_patient
+    
+ 
+    
+    private
+    
+    # def allowed_params
+    #        params.require(:physician).permit(:id, :email, :password, :password_confirmation)
+    #    end
+    
 end

@@ -38,7 +38,7 @@
 	<%= f.label :sex, :class => "control-label" %>
 	<div class= "controls">
 		<%= f.text_field :sex %>
-	</div>
+	</div> 
 </div>
 
 <div class="control-group">
@@ -56,8 +56,8 @@
 </div>
 
 <% if mode == :new %>
-<%= f.hidden_field :password, :value => "1234bulimiatx#{@password_random_suffix}"%>
-<%= f.hidden_field :password_confirmation, :value => "1234bulimiatx#{@password_random_suffix}" %>
+<%= f.hidden_field :password, :value => "hdmonhdmon#{@password_random_suffix}"%>
+<%= f.hidden_field :password_confirmation, :value => "hdmonhdmon#{@password_random_suffix}" %>
 <% end %>
 
 <div class="form-actions">

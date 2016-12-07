@@ -1,6 +1,8 @@
 class PhysiciansController < ApplicationController
-
-  before_action :authenticate_user, :except => [:new, :create, :allowed_params]
+  #wrap_parameters :physician, include: [:id, :email, :password_digest]
+  
+  #before_action :authenticate_user, :except => [:new, :create, :create_ph_session, :allowed_params]
+  #ActionController::Parameters.permit_all_parameters = true
   
   def new
     @physician = Physician.new
@@ -10,20 +12,72 @@ class PhysiciansController < ApplicationController
   end
 
   def create
-    @physician = Physician.new(allowed_params)
+    @physician = Physician.new(ph_signup_params)
+    #byebug
+    #params = ActionController::Parameters.new(email: @physician.email, password: @physician.password, password_confirmation: @physician.password_confirmation)
+    #@physician.password_digest = BCrypt::Password.create(params[:password])
     @physician.save
-    if @physician.save
-      redirect_to physician_additional_info_path
-      return false
+      if @physician.password_digest && @physician.email
+      session[:physician_id] = @physician.id
+      redirect_to physician_additional_info_path(:id => @physician.id)
     else
       render 'new'
       return false
     end
   end
 
-  def allowed_params
-    params.require(:physician).permit(:email, :password, :password_confirmation, :password_digest)
+
+
+
+
+
+
+
+
+
+
+
+
+
+  def create_ph_session
+    ph = Physician.find_by_email(params[:email])
+    unless ph == nil
+            if (ph.email == 'dev@bvl.com') && ph.authenticate(params[:password]) && ph.state
+              session[:physician_id] = 1
+              redirect_to admin_path(ph) # established admin account login success
+              
+            elsif (ph.email == 'dev@bvl.com') && ph.authenticate(params[:password]) && (ph.state == nil)
+                session[:physician_id] = 1
+                redirect_to physician_additional_info_path(:id => ph.id) #admin account setup second step
+                
+            elsif (ph.email != 'dev@bvl.com') && ph.authenticate(params[:password]) && ph.state
+              session[:physician_id] = ph.id
+              redirect_to physician_patients_path(ph) #established physician account login success
+             
+            elsif (ph.email != 'dev@bvl.com') && ph.authenticate(params[:password]) && (ph.state == nil)
+              session[:physician_id] = ph.id
+              redirect_to physician_additional_info_path(:id => ph.id)   #physician account setup second step
+               
+            elsif !ph.authenticate(params[:password])
+              flash.now[:danger] = 'incorrect login credentials 1'
+              render "sessions/new_physician_session_login" #** remember to add error message stating incorrect password for login                
+            end
+    else
+      flash.now[:danger] = 'email not recognized'
+      #render "sessions/new_physician_session_login" #** remember to add error message stating incorrect password or email for login
+    end
+    
   end
+
+
+  def physician_additional_info
+     if (params[:id] == session[:physician_id].to_s)
+       @ph = Physician.find(params[:id])
+     else
+       patient_restriction
+     end
+   end
+
 
   def physician_account
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
@@ -71,11 +125,11 @@ class PhysiciansController < ApplicationController
     if (session[:physician_id].to_s && (params[:id] == session[:physician_id].to_s)) || (session[:physician_id] == 1)
       @ph = Physician.find(params[:id])
       if @ph.first_name == nil
-        @ph.update_attributes(params[:physician])
+        @ph.update_attributes(ph_signup2_params)
         redirect_to welcome_ph_instructions_path(:physician_id => @ph.id)
         return false
       elsif @ph.first_name
-        if @ph.update_attributes(params[:physician])
+        if @ph.update_attributes(ph_signup2_params)
           redirect_to physician_account_path(:physician_id => @ph.id), :notice => "Your updates were successful."
           return false
         else
@@ -99,10 +153,11 @@ class PhysiciansController < ApplicationController
     end
   end
 
+
   def ph_password_update
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
         @ph = Physician.find(params[:physician_id])
-      if (@ph.update_attributes(params[:physician]))
+      if (@ph.update_attributes(ph_signup_params))
         redirect_to physician_patients_path(:physician_id => @ph.id), :notice => "Your password update was successful."
         return false
       else
@@ -126,7 +181,7 @@ class PhysiciansController < ApplicationController
   
   def signup_part2
     @ph = Physician.find(params[:id])
-    @ph.attributes = params[:physician]
+    @ph.attributes = ph_signup2_params
     if @ph.save
       redirect_to welcome_ph_instructions_path(:physician_id => @ph.id), :notice => "Your information saved."
       return false
@@ -136,13 +191,7 @@ class PhysiciansController < ApplicationController
     end
   end
 
-  def physician_additional_info
-    if (session[:physician_id].to_s && (params[:id] == session[:physician_id].to_s)) || (session[:physician_id] == 1)
-      @ph = Physician.find(params[:id])
-    else
-      patient_restriction
-    end
-  end
+ 
   
   def welcome_ph_instructions
     @ph = Physician.find(params[:physician_id])
@@ -167,5 +216,15 @@ def pt_archive_index
   @ph = Physician.find(params[:physician_id])
   @pt_arch = @ph.patients.where(:archive => true).all
 end
+
+
+private
+
+def ph_signup_params
+    params.require(:physician).permit(:email, :password, :password_confirmation)
+end
+def ph_signup2_params
+  params.require(:physician).permit(:first_name, :last_name, :state, :specialty, :email)
+end 
 
 end

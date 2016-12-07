@@ -1,6 +1,6 @@
 <h1>Physician Sign Up</h1>
 
-<%= form_for @physician, :html => {:class => "form-horizontal" } do |f|%>
+<%= form_for @physician, url: physicians_path do |f|%>
  
     <% if @physician.errors.any? %>
 	    <div id="error_explanation">
@@ -15,17 +15,17 @@
 	  <% end %>
   
   <p>
-   email
+    <%= f.label :email %>
     <%= f.text_field :email %>
   </p>
   <p>
-    password
+    <%= f.label :password %>
     <%= f.password_field :password %>
   </p>
   <p>
-   password confirmation
+    <%= f.label :password_confirmation, "Confirmation" %>
     <%= f.password_field :password_confirmation %>
   </p>
-  <p class="button"><%= f.submit %></p>
+  <p class="button"><%= f.submit "Create my account"%></p>
 <% end %>
 

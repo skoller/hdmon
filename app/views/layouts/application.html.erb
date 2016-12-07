@@ -21,8 +21,18 @@
 		<%= link_to "Back to Admin Home", admin_path(current_physician) %>
 		<% end %>
 	<% elsif @no_session_format %>
-	<% end %>
-	<%= yield %>
+    <% end %>
 </div>
+	<div class="container">
+		<%= flash_messages %>	
+	</div>
+	<div class="container">
+		<%= yield %>
+	</div>
+
+    
+     
+    
+    
 </body>
 </html>

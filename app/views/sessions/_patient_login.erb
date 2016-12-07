@@ -1,9 +1,9 @@
-<h1>Physician Log In</h1>
+<h1>Patient Log In</h1>
 
-<%= form_tag matched_path do %>
+<%= form_tag create_session_path do %>
 	<div class="field">
-		<%= label_tag :email%>
-		<%= text_field_tag :email, params[:email] %>
+		<%= label_tag :phone_number%>
+		<%= text_field_tag :phone_number%>
 	</div>
 	<div class="field">
 			<%= label_tag :password %>

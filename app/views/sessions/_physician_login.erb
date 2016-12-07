@@ -1,0 +1,13 @@
+<h1> Physician Log In</h1>
+
+<%= form_for :session, url: create_session_path do |f| %>
+	<div class="field">
+		      <%= f.label :email %>
+		      <%= f.email_field :email, class: 'form-control' %>
+
+		      <%= f.label :password %>
+		      <%= f.password_field :password, class: 'form-control' %>
+
+		      <%= f.submit "Log in", class: "btn btn-primary" %>
+	</div>
+<% end %>

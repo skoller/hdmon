@@ -1,12 +1,12 @@
 </br></br><h3>HOME PAGE</h3></br></br>
 <div>
 <h1>Physicians</h1></br>
-<h2><%= link_to "Sign Up", sign_up_path %>  ||  <%= link_to "Log In", log_in_path %></h2>
+<h2><%= link_to "Sign Up", sign_up_path %>  ||  <%= link_to "Log In", get_new_session_path(:format => 'physician') %></h2>
 </div>
 
 
 </br></br></br></br>___________________________________</br></br></br></br>
 <div>
 <h1>Patients</h1></br>
-<h2><%= link_to "New Patient Log In", new_patient_start_code_entry_path %>  ||  <%= link_to "Log In", patient_log_in_path %></h2>
+<h2><%= link_to "New Patient Log In", new_patient_start_code_entry_path %>  ||  <%= link_to "Log In", get_new_session_path(:format => 'patient') %></h2>
 </div>

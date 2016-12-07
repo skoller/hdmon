@@ -1,6 +1,6 @@
 class PhoneController < ApplicationController
 
-  BASE_DIR = "phone/" 
+  BASE_DIR = "phone/"
 
   def sms_handler
     if session[:patient_start]
@@ -8,7 +8,7 @@ class PhoneController < ApplicationController
       @ph = Physician.where(:id => @patient.physician_id).first
       number_to_send_to = @patient.phone_number
 
-      twilio_sid = "AC0e331b7fa11f13be73a32e5311a74969"
+      twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
       twilio_token = "e948aaf8caad373ae54918c175fd8786"
       twilio_phone_number = "3104992061"
 
@@ -17,7 +17,7 @@ class PhoneController < ApplicationController
       @twilio_client.account.sms.messages.create(
         :from => "+1#{twilio_phone_number}",
         :to => number_to_send_to,
-        :body => "Your Bivola account is now active. Visit www.bvl.herokuapp.com and use '#{@patient.start_code}' as your start code to sign up for online access to your diary entries."
+        :body => "Your Hdmon account is now active. Visit www.hdmon.herokuapp.com and use startcode: '#{@patient.start_code}' for instructions and online access."
       )
       redirect_to physician_patients_path(@ph)
       return false
@@ -57,9 +57,34 @@ class PhoneController < ApplicationController
 
     unless @patient.convo_handler
 
+      ##### send text at ____ pm, 1. headahce or no headache 2. New or same from yesterday(if yest exist) 3. Mild or Severe
+
       ######## conversation initiation
       @ch = ConvoHandler.new
       @ch.patient_id = @patient.id
+
+      if (params)['Body'].downcase.delete(" ") == "no"
+        @ch.state = 'no'
+        @le = LogEntry.new
+        @le.patient_id = @patient.id
+        @le.convo_handler_id = @ch.id
+        @ch.log_entry_id = @le.id
+        @le.
+        @ch.save(:validate => false)
+      elsif(params['Body']).downcase.delete(" ") == "yes"
+         @ch.state = "yes"
+         render BASE_DIR + "severity"
+      else
+        @error = "unrecognized_response_1"
+      end
+
+      if @ch.state = 'yes'
+      elsif
+
+      end
+
+
+   ###################
       if (params['Body']).downcase.delete(" ") == "food"
         @ch.state = 'food_when'
         @ch.save(:validate => false)
@@ -82,7 +107,7 @@ class PhoneController < ApplicationController
         @ch.log_entry_id = @le.id
         @ch.save(:validate => false)
         render BASE_DIR + "lax_minutes.xml"
-        return false 
+        return false
       elsif (params['Body']).downcase.delete(" ") == "vom"
         @ch.state = 'vom_when'
         @ch.save(:validate => false)
@@ -108,7 +133,7 @@ class PhoneController < ApplicationController
         return false
       end
 
-    else 
+    else
 
       ############################ NEW SCHEMATIC ##########################
       if @patient.convo_handler.state == 'food_when'
@@ -138,10 +163,10 @@ class PhoneController < ApplicationController
           @log_e.drop_it
           render BASE_DIR + "cancel.xml"
           return false
-        else 
+        else
           @error = "when_minutes_error"
           render BASE_DIR + "error.xml"
-          return false    
+          return false
         end
 
 
@@ -167,10 +192,10 @@ class PhoneController < ApplicationController
           @log_e.drop_it
           render BASE_DIR + "cancel.xml"
           return false
-        else 
+        else
           @error = "when_hours_error"
           render BASE_DIR + "error.xml"
-          return false    
+          return false
         end
 
 
@@ -181,7 +206,7 @@ class PhoneController < ApplicationController
         #       @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
         #       @ch = @patient.convo_handler
         #       if (params['Body']).downcase.delete(" ") == "t"
-        #         @log_e.date = DateTime.now 
+        #         @log_e.date = DateTime.now
         #         @log_e.save(:validate => false)
         #         @log_e.day = @patient.determine_log_entry_day_index(@log_e)
         #         @log_e.save(:validate => false)
@@ -190,7 +215,7 @@ class PhoneController < ApplicationController
         #         render BASE_DIR + "food.xml"
         #         return false
         #       elsif (params['Body']).downcase.delete(" ") == "x"
-        #         @log_e.date = DateTime.yesterday 
+        #         @log_e.date = DateTime.yesterday
         #         @log_e.save(:validate => false)
         #         @ch.state = 'food'
         #         @ch.save(:validate => false)
@@ -201,13 +226,13 @@ class PhoneController < ApplicationController
         #         @log_e.drop_it
         #         render BASE_DIR + "cancel.xml"
         #         return false
-        #       else 
+        #       else
         #         @error = "day_error"
         #         render BASE_DIR + "error.xml"
-        #         return false    
+        #         return false
         #       end
 
-        ########## food 
+        ########## food
       elsif (@patient.convo_handler.state == 'food') || (@patient.convo_handler.state == 'continue_food_entry')
         @ch = @patient.convo_handler
         if (params['Body']).downcase.delete(" ") == "cancel"
@@ -311,14 +336,14 @@ class PhoneController < ApplicationController
         #           render BASE_DIR + "error.xml"
         #           return false
         #         end
-        #         
+        #
         #       else
         #         @error = "time_blank"
         #         render BASE_DIR + "error.xml"
         #         return false
         #       end
 
-        ########### bvl  
+        ########### bvl
       elsif @patient.convo_handler.state == 'bvl'
         @ch = @patient.convo_handler
         if (params['Body']).downcase.delete(" ") == "cancel"
@@ -348,7 +373,7 @@ class PhoneController < ApplicationController
           @error = "bvl_blank"
           render BASE_DIR + "error.xml"
           return false
-        end  
+        end
 
       elsif @patient.convo_handler.state == 'food_lax_dose'
         @ch = @patient.convo_handler
@@ -373,8 +398,8 @@ class PhoneController < ApplicationController
           return false
         end
 
-        ########### personal_notes 
-        
+        ########### personal_notes
+
          elsif (@patient.convo_handler.state == 'food_lax_note') || (@patient.convo_handler.state == 'continue_food_lax_note_entry')
             @ch = @patient.convo_handler
             if (params['Body']).downcase.delete(" ") == "cancel"
@@ -387,7 +412,7 @@ class PhoneController < ApplicationController
             unless (params["Body"]).delete(" ") == ""
                 if ((params['Body']) =~ /\#/ ) && (@ch.state == "food_lax_note")
                   @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-                  if @log_e.personal_notes 
+                  if @log_e.personal_notes
                     @log_e.personal_notes = @log_e.personal_notes + "; NOTES: " + (params['Body']).squeeze(" ").tr('/#', '')
                     @log_e.save(:validate => false)
                     render BASE_DIR + "thank_you.xml"
@@ -396,7 +421,7 @@ class PhoneController < ApplicationController
                   end
                 elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "food_lax_note")
                    @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-                   if @log_e.personal_notes 
+                   if @log_e.personal_notes
                      @log_e.personal_notes = @log_e.personal_notes + "; NOTES: " + (params['Body']).squeeze(" ")
                      @log_e.save(:validate => false)
                      @ch.state = 'continue_food_lax_note_entry'
@@ -405,14 +430,14 @@ class PhoneController < ApplicationController
                    end
                 elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "continue_food_lax_note_entry")
                    @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-                   if @log_e.personal_notes 
+                   if @log_e.personal_notes
                       @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ")
                       @log_e.save(:validate => false)
                       return false
                    end
                  elsif ((params['Body']) =~ /\#/ ) && (@ch.state == "continue_food_lax_note_entry")
                    @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-                   if @log_e.personal_notes 
+                   if @log_e.personal_notes
                      @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ").tr('/#', '')
                      @log_e.save(:validate => false)
                      render BASE_DIR + "thank_you.xml"
@@ -425,11 +450,11 @@ class PhoneController < ApplicationController
                 render BASE_DIR + "error.xml"
                 return false
               end
-        
-        
-        
-        
-        
+
+
+
+
+
       elsif (@patient.convo_handler.state == 'note') || (@patient.convo_handler.state == 'continue_note')
         @ch = @patient.convo_handler
         if (params['Body']).downcase.delete(" ") == "cancel"
@@ -441,14 +466,14 @@ class PhoneController < ApplicationController
         end
         unless (params["Body"]).delete(" ") == ""
           if ((params['Body']) =~ /\#/ ) && (@ch.state == "note")
-            @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first 
+            @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
             @log_e.personal_notes = (params['Body']).squeeze(" ").tr('/#', '')
             @log_e.save(:validate => false)
             render BASE_DIR + "thank_you.xml"
             @ch.drop_it_like_its_hot
             return false
           elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "note")
-             @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first 
+             @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
              @log_e.personal_notes = (params['Body']).squeeze(" ").tr('/#', '')
              @log_e.save(:validate => false)
              render BASE_DIR + "thank_you.xml"
@@ -457,14 +482,14 @@ class PhoneController < ApplicationController
              return false
           elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "continue_note")
              @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-             if @log_e.personal_notes 
+             if @log_e.personal_notes
                 @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ")
                 @log_e.save(:validate => false)
                 return false
              end
            elsif ((params['Body']) =~ /\#/ ) && (@ch.state == "continue_note")
              @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-             if @log_e.personal_notes 
+             if @log_e.personal_notes
                @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ").tr('/#', '')
                @log_e.save(:validate => false)
                render BASE_DIR + "thank_you.xml"
@@ -477,7 +502,7 @@ class PhoneController < ApplicationController
             render BASE_DIR + "error.xml"
             return false
          end
-      
+
 
           ########### lax schematic
 
@@ -516,10 +541,10 @@ class PhoneController < ApplicationController
             @log_e.drop_it
             render BASE_DIR + "cancel.xml"
             return false
-          else 
+          else
             @error = "lax_when_minutes_error"
             render BASE_DIR + "error.xml"
-            return false    
+            return false
           end
 
         elsif @patient.convo_handler.state == 'lax_when_hours'
@@ -552,10 +577,10 @@ class PhoneController < ApplicationController
             @log_e.drop_it
             render BASE_DIR + "cancel.xml"
             return false
-          else 
+          else
             @error = "lax_when_hours_error"
             render BASE_DIR + "error.xml"
-            return false    
+            return false
           end
 
         elsif @patient.convo_handler.state == 'lax_dose'
@@ -592,7 +617,7 @@ class PhoneController < ApplicationController
           #        @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
           #        @ch = @patient.convo_handler
           #        if (params['Body']).downcase.delete(" ") == "t"
-          #          @log_e.date = DateTime.now 
+          #          @log_e.date = DateTime.now
           #          @log_e.save(:validate => false)
           #          @log_e.day = @patient.determine_log_entry_day_index(@log_e)
           #          @log_e.location = "N/A"
@@ -605,7 +630,7 @@ class PhoneController < ApplicationController
           #          render BASE_DIR + "lax_time.xml"
           #          return false
           #        elsif (params['Body']).downcase.delete(" ") == "x"
-          #          @log_e.date = DateTime.yesterday 
+          #          @log_e.date = DateTime.yesterday
           #          @log_e.save(:validate => false)
           #          @ch.state = 'lax_time'
           #          @ch.save(:validate => false)
@@ -616,10 +641,10 @@ class PhoneController < ApplicationController
           #          @log_e.drop_it
           #          render BASE_DIR + "cancel.xml"
           #          return false
-          #        else 
+          #        else
           #          @error = "lax_day_error"
           #          render BASE_DIR + "error.xml"
-          #          return false    
+          #          return false
           #        end
 
           ######## lax time
@@ -655,14 +680,14 @@ class PhoneController < ApplicationController
           #           render BASE_DIR + "error.xml"
           #           return false
           #         end
-          #         
+          #
           #       else
           #         @error = "lax_time_blank"
           #         render BASE_DIR + "error.xml"
           #         return false
           #       end
 
-          ######### lax note  
+          ######### lax note
         elsif (@patient.convo_handler.state == 'lax_note') || (@patient.convo_handler.state == 'continue_lax_note')
           @ch = @patient.convo_handler
           if (params['Body']).downcase.delete(" ") == "cancel"
@@ -675,7 +700,7 @@ class PhoneController < ApplicationController
           unless (params["Body"]).delete(" ") == ""
             if ((params['Body']) =~ /\#/ ) && (@ch.state == "lax_note")
               @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-              if @log_e.personal_notes 
+              if @log_e.personal_notes
                 @log_e.personal_notes = @log_e.personal_notes + "; NOTES: " + (params['Body']).squeeze(" ").tr('/#', '')
                 @log_e.save(:validate => false)
                 render BASE_DIR + "thank_you.xml"
@@ -684,7 +709,7 @@ class PhoneController < ApplicationController
               end
             elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "lax_note")
                @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-               if @log_e.personal_notes 
+               if @log_e.personal_notes
                  @log_e.personal_notes = @log_e.personal_notes + "; NOTES: " + (params['Body']).squeeze(" ")
                  @log_e.save(:validate => false)
                  @ch.state = 'continue_lax_note'
@@ -693,14 +718,14 @@ class PhoneController < ApplicationController
                end
             elsif !((params['Body']) =~ /\#/ ) && (@ch.state == "continue_lax_note")
                @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-               if @log_e.personal_notes 
+               if @log_e.personal_notes
                   @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ")
                   @log_e.save(:validate => false)
                   return false
                end
              elsif ((params['Body']) =~ /\#/ ) && (@ch.state == "continue_lax_note")
                @log_e = LogEntry.where( :convo_handler_id => @patient.convo_handler.id ).first
-               if @log_e.personal_notes 
+               if @log_e.personal_notes
                  @log_e.personal_notes = @log_e.personal_notes + " " + (params['Body']).squeeze(" ").tr('/#', '')
                  @log_e.save(:validate => false)
                  render BASE_DIR + "thank_you.xml"
@@ -751,10 +776,10 @@ class PhoneController < ApplicationController
             @log_e.drop_it
             render BASE_DIR + "cancel.xml"
             return false
-          else 
+          else
             @error = "vom_when_minutes_error"
             render BASE_DIR + "error.xml"
-            return false    
+            return false
           end
 
 
@@ -788,10 +813,10 @@ class PhoneController < ApplicationController
             @log_e.drop_it
             render BASE_DIR + "cancel.xml"
             return false
-          else 
+          else
             @error = "vom_when_hours_error"
             render BASE_DIR + "error.xml"
-            return false    
+            return false
           end
 
         elsif (@patient.convo_handler.state == 'vom_note') || (@patient.convo_handler.state == 'continue_vom_note')
@@ -839,7 +864,7 @@ class PhoneController < ApplicationController
             return false
           end
 
-          ########### convo_handler state is messed up  
+          ########### convo_handler state is messed up
         else
           @error = "convo_handler_state_undefined"
           render BASE_DIR + "error.xml"
@@ -883,7 +908,7 @@ class PhoneController < ApplicationController
         entry.save(:validate => false)
       end
     end
-    
+
     ################# time zone calc ########
     def pt_time_zone(state)
        state_to_utc = {
@@ -949,5 +974,4 @@ class PhoneController < ApplicationController
 
 
 
-  end  
-
+  end

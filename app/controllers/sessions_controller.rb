@@ -16,16 +16,20 @@ class SessionsController < ApplicationController
       redirect_to home_page_path
     end
   end
-  
+
    def login_allowed_params
      x = params.require(:session).permit(:email, :password)
    end
-   
+
+   def pt_login_allowed_params
+     x = params.require(:session).permit(:password)
+   end
+
    def password_set_params
      params.require(:patient).permit(:password, :password_confirmation)
    end
 
-  
+
     def create
            if session[:identity_ph] == true
               ph = Physician.find_by email: params[:session][:email]
@@ -36,30 +40,29 @@ class SessionsController < ApplicationController
               elsif ph && ph.authenticate(params[:session][:password]) && ((ph.state == (nil || "")) || (ph.first_name == (nil || "")) || (ph.last_name == (nil || "")) || (ph.specialty == (nil || "")))
                 session[:physician_id] = ph.id
                 session[:identity_ph] = nil
-                redirect_to physician_additional_info_path(:id => ph.id) 
+                redirect_to physician_additional_info_path(:id => ph.id)
                 flash[:alert] = 'We still need a few more details about you before you start!'
               else
                 redirect_to new_session_path flash[:alert] = 'Incorrect email/password combination'
               end
            elsif session[:identity_pt] == true
               pt = Patient.find_by phone_number: params[:phone_number]
-              byebug
-              if pt && pt.authenticate(params[:session][:password])
+              if pt && pt.authenticate(params[:password])
                 session[:patient_id] = pt.id
                 session[:identity_pt] = nil
-                redirect_to patient_show_path(:id => ph.id)
+                redirect_to physician_patient_log_entries_path(:patient_id => pt.id, :physician_id => pt.physician_id)
               else
-                redirect_to new_session_path
+                redirect_to create_session_path(params[:format] == 'patient')
               end
             end
          end
-         
+
     def destroy_ph_session
           session[:physician_id] = nil
           redirect_to home_page_path, notice: "Logged out!"
           return false
     end
-   
+
     # em = params[:email]
     #    if em
     #      #redirect_to create_ph_sessionG_path(allowed_params_login)
@@ -69,12 +72,12 @@ class SessionsController < ApplicationController
   def new_patient_session_login
         session[:first_login_restriction] = true
   end
-    
-    
-    
+
+
+
      def new_patient_start_code_entry
      end
-    
+
      def new_patient_code_verification
                pt_phone_number = Patient.where(:phone_number => params[:phone_number]).first
                pt_code = Patient.where(:start_code => params[:start_code]).first
@@ -83,21 +86,21 @@ class SessionsController < ApplicationController
                    redirect_to new_patient_session_login_path
                  elsif pt_code.phone_number == pt_phone_number.phone_number
                    session[:start] = pt_code.id
-                   redirect_to new_patient_password_setup_path(:pt_id => pt_code.id) 
+                   redirect_to new_patient_password_setup_path(:pt_id => pt_code.id)
                  elsif pt_code.phone_number && !pt_phone_number.phone_number
                    redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the start code you provided."
                  elsif !pt_code.phone_number && pt_phone_number.phone_number
-                   redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number you provided."  
+                   redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number you provided."
                  end
         else
-            redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number or start code you provided."  
+            redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number or start code you provided."
         end
       end
-            
+
      def new_patient_password_setup
        @patient = Patient.find(params[:pt_id])
      end
-         
+
        def password_set
          @patient = Patient.find(params[:pt_id])
          if (session[:start]).to_s == @patient.id.to_s
@@ -109,14 +112,14 @@ class SessionsController < ApplicationController
              redirect_to new_patient_password_setup_path(:pt_id => @patient.id)
              return false
            end
-           
+
          else
            redirect_to home_page_path
            return false
          end
        end
-    
-    
+
+
      def create_pt_session
        pt = Patient.where(:phone_number => params[:phone_number]).first
        if pt
@@ -128,7 +131,7 @@ class SessionsController < ApplicationController
        end
        if pt
          if pt.signup_status == "returning"
-           if pt && pt.authenticate(params[:session][:password])
+           if pt && pt.authenticate(pt_login_allowed_params)
              session[:patient_id] = pt.id
              redirect_to physician_patient_log_entries_path(ph, pt), notice: "Logged in!"
              return false
@@ -139,7 +142,7 @@ class SessionsController < ApplicationController
          elsif pt.signup_status == "new"
            if session[:first_login_restriction]
              session[:first_login_restriction] = nil
-             redirect_to new_patient_start_code_entry_path, :notice => "Because you are a new patient, please sign up here." 
+             redirect_to new_patient_start_code_entry_path, :notice => "Because you are a new patient, please sign up here."
              return false
            else
              session[:patient_id] = pt.id
@@ -157,21 +160,21 @@ class SessionsController < ApplicationController
          redirect_to patient_log_in_path
          return false
        end
-    
+
      end
-    
-   
-    
+
+
+
      def destroy_pt_session
        session[:patient_id] = nil
        redirect_to home_page_path, notice: "Logged out!"
        return false
      end
-     
-    
 
-    
-              
-     
-  
+
+
+
+
+
+
 end

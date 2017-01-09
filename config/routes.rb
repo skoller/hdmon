@@ -1,9 +1,9 @@
 Hdmon::Application.routes.draw do
-  
+
   root :to => 'application#home_page'
-  
-  
-  
+
+
+
   #get 'physician_signup_part2/:id(.:format)' => 'physicians#signup_part2', :as => "physician_signup_part2G"
   put 'physician_signup_part2/:id(.:format)' => 'physicians#signup_part2', :as => "physician_signup_part2P"
   get "home_page" => "application#home_page", :as => "home_page"
@@ -16,37 +16,37 @@ Hdmon::Application.routes.draw do
   get "new_patient" => "sessions#new_patient_start_code_entry", :as => "new_patient_start_code_entry"
   get "new_patient_password_setup/:pt_id" => "sessions#new_patient_password_setup", :as => "new_patient_password_setup"
   put "p_set/:pt_id" => "sessions#password_set", :as => "password_set"
-  
-  
-  
+
+
+
   # flash.now.alert=
   get 'phone/sms_handler' => "phone#sms_handler", :as => "sms_handler"
   get 'after_start_code_web_handler' => "patients#after_start_code_web_handler", :as => "after_start_code_web_handler"
-  
+
   delete "physician_log_out" => "sessions#destroy_ph_session", :as => "log_out"
-  
+
   get "physician_log_in" => "sessions#new_physician_session_login", :as => "log_inG"
   post "physician_log_in" => "sessions#new_physician_session_login", :as => "log_inP"
-  
+
   get "physician_find" => "physicians#create_ph_session", :as => "create_ph_sessionG"
   post "physician_find" => "physicians#create_ph_session", :as => "create_ph_sessionP"
   get "physician_log_in_session" => "physicians#create_ph_session", :as => "create_ph_session"
-  
-  
+
+
   get "physician_sign_up" => "physicians#new", :as => "sign_up"
   get "physician_additional_info" => "physicians#physician_additional_info", :as => "physician_additional_info"
-  get "welcome_ph_instructions/:physician_id" => "physicians#welcome_ph_instructions", :as => "welcome_ph_instructions" 
+  get "welcome_ph_instructions/:physician_id" => "physicians#welcome_ph_instructions", :as => "welcome_ph_instructions"
   get "unarch_pt/:id/:patient_id" => "physicians#unarchive_patient", :as => "unarchive_patient"
   get "physician_account/:physician_id" => "physicians#physician_account", :as => "physician_account"
   get "edit_physician_account/:physician_id" => "physicians#edit_physician_account", :as => "edit_physician_account"
   get "physician_pswd_edit/:physician_id" => "physicians#ph_password_edit", :as => 'ph_password_edit'
   patch "physician_pswd_update/:physician_id" => "physicians#ph_password_update", :as => 'ph_password_update'
-  
-  
+
+
   get "login" => "sessions#new", :as => 'get_new_session'
   post "login" => "sessions#create", :as => 'create_session'
   post "login" => "sessions#new", :as => 'post_new_session'
- 
+
   # physicians GET    /physicians(.:format)                                                         physicians#index
   #                                    POST   /physicians(.:format)                                                         physicians#create
   #                      new_physician GET    /physicians/new(.:format)                                                     physicians#new
@@ -54,9 +54,9 @@ Hdmon::Application.routes.draw do
   #                          physician GET    /physicians/:id(.:format)                                                     physicians#show
   #                                    PATCH  /physicians/:id(.:format)                                                     physicians#update
   #                                    PUT    /physicians/:id(.:format)                                                     physicians#update
-  #                                    DELETE /physicians/:id(.:format)                                                     physicians#destroy 
-  
-  
+  #                                    DELETE /physicians/:id(.:format)                                                     physicians#destroy
+
+
     delete "patient_log_out" => "sessions#destroy_pt_session", :as => "patient_log_out"
     get "patient_log_in" => "sessions#new_patient_session_login", :as => "patient_log_in"
     get "patient_find" => "sessions#create_pt_session", :as => "patient_geted"
@@ -64,8 +64,8 @@ Hdmon::Application.routes.draw do
     get "patient_show/:patient_id" => "patients#patient_show_limited", :as => "pt_show"
     put "patient_update/:patient_id" => "patients#patient_update_limited", :as => "pt_update"
     get "patient_welcome/:patient_id" => "patients#patient_welcome", :as => "patient_welcome"
-  
-  
+
+
   get "admin_override_pt_password_edit/:patient_id" => "patients#admin_pt_password_edit", :as => "admin_pt_pass_edit"
   get "admin_override_pt_password_update/:patient_id" => "patients#admin_pt_password_update", :as => "admin_pt_pass_update"
   get "admin" => "admin#index", :as => "admin"
@@ -76,13 +76,15 @@ Hdmon::Application.routes.draw do
   get "react_and_unarch_pt/:patient_id" => "admin#reactivate_and_unarchive_patient", :as => "reactivate_and_unarchive_patient"
   get "archive_a_physician/:physician_id" => "admin#archive_a_physician", :as => "archive_a_physician"
   get "unarchive_a_physician/:physician_id" => "admin#unarchive_a_physician", :as => "unarchive_a_physician"
-  
+
+  post 'twilio/test' => 'twilio#test'
+
   resources :physicians do
     resources :patients do
       resources :log_entries
     end
   end
-  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

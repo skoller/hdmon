@@ -1,8 +1,8 @@
 class LogEntriesController < ApplicationController
- 
+
   before_action :authenticate_user
   before_action :restrict_access_to_relevant_pages
-  
+
   def index
     if session[:physician_id]
       @physician_or_admin_view = true
@@ -19,8 +19,8 @@ class LogEntriesController < ApplicationController
           send_data pdf.render, filename: "#{@patient.last_name.capitalize}#{@patient.first_name.split(//)[0].capitalize}_#{Date.today}_EatingLog.pdf",
                                 type: "application/pdf",
                                 disposition: "inline"
-                    
-                               
+
+
         end
     end
   end
@@ -60,7 +60,7 @@ class LogEntriesController < ApplicationController
     @ph = Physician.find(params[:physician_id])
     @patient = @ph.patients.find(params[:patient_id])
     @log_entry = @patient.log_entries.find(params[:id])
-    
+
     if @log_entry.update_attributes(params[:log_entry])
       redirect_to physician_patient_log_entry_path(@ph, @patient, @log_entry), notice: 'Log entry was successfully updated.'
       return false
@@ -78,6 +78,6 @@ class LogEntriesController < ApplicationController
     redirect_to physician_patient_log_entries_path(@ph, @patient)
     return false
   end
-  
-  
+
+
 end

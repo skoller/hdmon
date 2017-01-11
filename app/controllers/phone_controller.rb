@@ -3,17 +3,18 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def test
-    # twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
-    # twilio_token = "e948aaf8caad373ae54918c175fd8786"
-    # twilio_phone_number = "3104992061"
-if (params)['Body'].downcase.delete(" ") == "fun"
-      response = Twilio::TwiML::Response.new do |r|
-
+    twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
+    twilio_token = "e948aaf8caad373ae54918c175fd8786"
+    twilio_phone_number = "3104992061"
+      if (params)['Body'].downcase.delete(" ") == "fun"
+        response = Twilio::TwiML::Response.new do |r|
         r.Sms "Well done"
-
-      end
+        end
       render :xml => response.to_xml
-    end
+      end
+   end
+    twilio_number = ENV['TWILIO_NUMBER']
+    client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
   # BASE_DIR = "phone/"
   #
   # def sms_handler
@@ -28,7 +29,7 @@ if (params)['Body'].downcase.delete(" ") == "fun"
   #
   #     @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
   #
-  #     @twilio_client.account.sms.messages.create(
+  #     @twilio_client.account.messages.create(
   #       :from => "+1#{twilio_phone_number}",
   #       :to => number_to_send_to,
   #       :body => "Your Hdmon account is now active. Visit www.hdmon.herokuapp.com and use startcode: '#{@patient.start_code}' for instructions and online access."

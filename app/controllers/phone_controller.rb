@@ -7,11 +7,12 @@ class PhoneController < ApplicationController
     twilio_token = "e948aaf8caad373ae54918c175fd8786"
     twilio_phone_number = "3104992061"
       if (params)['Body'].downcase.delete(" ") == "fun"
-        response = Twilio::TwiML::Response.new do |r|
-        r.Sms "Well done"
-        end
-      render :xml => response.to_xml
-      end
+        @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
+        @twilio_client.account.messages.create(
+              :from => "+1#{twilio_phone_number}",
+              :to => number_to_send_to,
+              :body => "congrats"
+            )
    end
     twilio_number = ENV['TWILIO_NUMBER']
     client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']

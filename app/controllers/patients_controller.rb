@@ -79,6 +79,7 @@ class PatientsController < ApplicationController
         @password_random_suffix = rand(999999).to_s.center(6, rand(9).to_s)
         if @patient.save
           session[:patient_start] = @patient.id
+          ##### run a method that sends the start code to the patient
           redirect_to physician_patients_path
           return false
         else

@@ -12,7 +12,7 @@ class PatientsController < ApplicationController
       patient_restriction
     end
   end
-  
+
   def archive
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
       @ph = Physician.find(params[:physician_id])
@@ -31,7 +31,7 @@ class PatientsController < ApplicationController
       patient_restriction
     end
   end
-  
+
   def index_pt_archive
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
       @ph = Physician.find(params[:physician_id])
@@ -79,7 +79,7 @@ class PatientsController < ApplicationController
         @password_random_suffix = rand(999999).to_s.center(6, rand(9).to_s)
         if @patient.save
           session[:patient_start] = @patient.id
-          redirect_to sms_handler_path
+          redirect_to physician_patients_path
           return false
         else
           render :action => "new"
@@ -89,7 +89,7 @@ class PatientsController < ApplicationController
         patient_restriction
       end
     end
-  
+
 
     def update
       if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
@@ -122,24 +122,24 @@ class PatientsController < ApplicationController
         patient_restriction
       end
     end
-    
+
     def admin_pt_password_edit
       if session[:physician_id] == 1
         @patient = Patient.find(params[:patient_id])
-        @ph = Physician.find(@patient.physician_id)  
+        @ph = Physician.find(@patient.physician_id)
       else
         redirect_to home_page_path
         return false
       end
     end
-    
+
     def admin_pt_password_update
       if session[:physician_id] == 1
         @patient = Patient.find(params[:patient_id])
         @ph = Physician.find(@patient.physician_id)
         @patient.signup_status = "returning"
         @patient.save(:validate => false)
-        
+
         if @patient.update_attributes(allowed_pt_params)
           redirect_to physician_patient_path(@ph, @patient), :notice => "The patient's password was successfully reset"
           return false
@@ -152,22 +152,22 @@ class PatientsController < ApplicationController
         return false
       end
     end
-    
+
     def patient_welcome
       @pt = Patient.find(params[:patient_id])
       @ph = Physician.find(@pt.physician_id)
       if @pt
         @pt.signup_status = 'returning'
         if @pt.save
-        elsif 
+        elsif
           redirect_to new_patient_password_setup_path(@pt.id => :pt_id)
         end
-        else 
+        else
           redirect to home_page_path
-          flash[:notice] = 'Something went wrong!' 
+          flash[:notice] = 'Something went wrong!'
       end
     end
-    
+
 
     ############# paitent-specific methods #######
 
@@ -206,7 +206,7 @@ class PatientsController < ApplicationController
         patient_restriction
       end
     end
-    
+
 private
 def allowed_pt_params
   params.require(:patient).permit(:id, :patient_id, :first_name, :last_name, :dob, :diagnosis, :phone_number, :sex, :password, :password_confirmation)

@@ -3,12 +3,13 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def test
-    twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
+    twilio_sid = "AC0e331b7fa11f13be73a32e5311a74969"
     twilio_token = "e948aaf8caad373ae54918c175fd8786"
     twilio_phone_number = "3104992061"
     if (params)['Body'].downcase.delete(" ") == "fun"
         raw_number = params['From']
         number_mod = raw_number.tr('/+/-/)/(', '')
+        byebug
         if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
               if number_mod.size == 11
                 @processed_num = number_mod.slice(1..10)

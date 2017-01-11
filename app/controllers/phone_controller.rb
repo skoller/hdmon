@@ -9,7 +9,6 @@ class PhoneController < ApplicationController
     if (params)['Body'].downcase.delete(" ") == "fun"
         raw_number = params['From']
         number_mod = raw_number.tr('/+/-/)/(', '')
-        byebug
         if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
               if number_mod.size == 11
                 @processed_num = number_mod.slice(1..10)

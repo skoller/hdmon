@@ -6,16 +6,38 @@ class PhoneController < ApplicationController
     twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
     twilio_token = "e948aaf8caad373ae54918c175fd8786"
     twilio_phone_number = "3104992061"
-      if (params)['Body'].downcase.delete(" ") == "fun"
+    if (params)['Body'].downcase.delete(" ") == "fun"
+        raw_number = params['From']
+        number_mod = raw_number.tr('/+/-/)/(', '')
+        if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
+              if number_mod.size == 11
+                @processed_num = number_mod.slice(1..10)
+              elsif number_mod.size == 10
+                @processed_num = number_mod.slice(0..9)
+              end
+              if Patient.where(:phone_number => @processed_num).exists?
+                @patient = Patient.where(:phone_number => @processed_num).first
+              else
+                @error = "number_problem_1"
+                render BASE_DIR + "error.xml"
+                return false
+              end
+
+        else
+          @error = "number_problem_2"
+          render BASE_DIR + "error.xml"
+          return false
+        end
+        number_to_send_to = @patient.phone_number
         @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
         @twilio_client.account.messages.create(
               :from => "+1#{twilio_phone_number}",
               :to => number_to_send_to,
               :body => "congrats"
             )
-   end
-    twilio_number = ENV['TWILIO_NUMBER']
-    client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+    end
+    # twilio_number = ENV['TWILIO_NUMBER']
+    # client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
   # BASE_DIR = "phone/"
   #
   # def sms_handler
@@ -40,31 +62,31 @@ class PhoneController < ApplicationController
   #   end
   #
   #   ######### number / patient identification
-  #   raw_number = params['From']
-  #   number_mod = raw_number.tr('/+/-/)/(', '')
-  #
-  #   if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
-  #
-  #     if number_mod.size == 11
-  #       @processed_num = number_mod.slice(1..10)
-  #     elsif number_mod.size == 10
-  #       @processed_num = number_mod.slice(0..9)
-  #     end
-  #
-  #     if Patient.where(:phone_number => @processed_num).exists?
-  #       @patient = Patient.where(:phone_number => @processed_num).first
-  #     else
-  #       @error = "number_problem_1"
-  #       render BASE_DIR + "error.xml"
-  #       return false
-  #     end
-  #
-  #   else
-  #     @error = "number_problem_2"
-  #     render BASE_DIR + "error.xml"
-  #     return false
-  #   end
-  #
+    raw_number = params['From']
+    number_mod = raw_number.tr('/+/-/)/(', '')
+
+    if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
+
+      if number_mod.size == 11
+        @processed_num = number_mod.slice(1..10)
+      elsif number_mod.size == 10
+        @processed_num = number_mod.slice(0..9)
+      end
+
+      if Patient.where(:phone_number => @processed_num).exists?
+        @patient = Patient.where(:phone_number => @processed_num).first
+      else
+        @error = "number_problem_1"
+        render BASE_DIR + "error.xml"
+        return false
+      end
+
+    else
+      @error = "number_problem_2"
+      render BASE_DIR + "error.xml"
+      return false
+    end
+
   #
   #
   #

@@ -1,6 +1,6 @@
 class PhoneController < ApplicationController
 
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
   def test
     twilio_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"

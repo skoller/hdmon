@@ -77,7 +77,7 @@ Hdmon::Application.routes.draw do
   get "archive_a_physician/:physician_id" => "admin#archive_a_physician", :as => "archive_a_physician"
   get "unarchive_a_physician/:physician_id" => "admin#unarchive_a_physician", :as => "unarchive_a_physician"
 
-  post 'twilio/test' => 'twilio#test'
+  post 'phone/test' => 'phone#test'
 
   resources :physicians do
     resources :patients do

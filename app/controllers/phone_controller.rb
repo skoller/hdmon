@@ -3,9 +3,9 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
 
-  def test
+def test
 
-    if (params)['Body'].downcase.delete(" ") == "fun"
+     if (params)['Body'].downcase.delete(" ") == "fun"
           raw_number = params['From']
           number_mod = raw_number.tr('/+/-/)/(', '')
               if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
@@ -21,31 +21,33 @@ class PhoneController < ApplicationController
                         render BASE_DIR + "error.xml"
                         return false
                       end
+                      
+                      number_to_send_to = @patient.phone_number
+                      account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
+                      auth_token = 'e948aaf8caad373ae54918c175fd8786'
+                      twilio_phone_number = "3104992061"
+                      @twilio_client = Twilio::REST::Client.new account_sid, auth_token
+
+                      @twilio_client.account.messages.create(
+                            :from => "+1#{twilio_phone_number}",
+                            :to => number_to_send_to,
+                            :body => "congrats"
+                          )
 
               else
                       @error = "number_problem_2"
                       render BASE_DIR + "error.xml"
                       return false
               end
-    else
+     else
           @error = "unrecognized_response_1"
           render BASE_DIR + "error.xml"
           return false
-    end
 
-        number_to_send_to = @patient.phone_number
-        account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
-        auth_token = 'e948aaf8caad373ae54918c175fd8786'
-        twilio_phone_number = "3104992061"
-        @twilio_client = Twilio::REST::Client.new account_sid, auth_token
-
-        @twilio_client.account.messages.create(
-              :from => "+1#{twilio_phone_number}",
-              :to => number_to_send_to,
-              :body => "congrats"
-            )
      end
-   end
+
+
+end
     # twilio_number = ENV['TWILIO_NUMBER']
     # client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
   # BASE_DIR = "phone/"

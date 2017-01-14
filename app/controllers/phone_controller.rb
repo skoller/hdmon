@@ -3,9 +3,9 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
   def test
-    # TWILIO_ACCOUNT_SID = "MG7ad8bdb7446dbca9486c71ede31168e9"
-    # TWILIO_AUTH_TOKEN = "e948aaf8caad373ae54918c175fd8786"
-    # twilio_phone_number = "3104992061"
+     account_sid = "MG7ad8bdb7446dbca9486c71ede31168e9"
+     auth_token = "e948aaf8caad373ae54918c175fd8786"
+     twilio_phone_number = "3104992061"
     if (params)['Body'].downcase.delete(" ") == "fun"
         raw_number = params['From']
         number_mod = raw_number.tr('/+/-/)/(', '')
@@ -30,12 +30,12 @@ class PhoneController < ApplicationController
         end
         number_to_send_to = @patient.phone_number
 
-        twilio_number = ENV['TWILIO_NUMBER']
-        client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+
+        client = Twilio::REST::Client.new account_sid, auth_token
         # @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
 
         @twilio_client.account.messages.create(
-              :from => "+1#{@twilio_phone_number}",
+              :from => "+1#{twilio_phone_number}",
               :to => number_to_send_to,
               :body => "congrats"
             )

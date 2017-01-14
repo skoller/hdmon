@@ -3,9 +3,9 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
   def test
-    TWILIO_ACCOUNT_SID = "MG7ad8bdb7446dbca9486c71ede31168e9"
-    TWILIO_AUTH_TOKEN = "e948aaf8caad373ae54918c175fd8786"
-    twilio_phone_number = "3104992061"
+    # TWILIO_ACCOUNT_SID = "MG7ad8bdb7446dbca9486c71ede31168e9"
+    # TWILIO_AUTH_TOKEN = "e948aaf8caad373ae54918c175fd8786"
+    # twilio_phone_number = "3104992061"
     if (params)['Body'].downcase.delete(" ") == "fun"
         raw_number = params['From']
         number_mod = raw_number.tr('/+/-/)/(', '')

@@ -21,7 +21,7 @@ def test
                         render BASE_DIR + "error.xml"
                         return false
                       end
-                      
+
                       number_to_send_to = @patient.phone_number
                       account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
                       auth_token = 'e948aaf8caad373ae54918c175fd8786'
@@ -31,7 +31,7 @@ def test
                       @twilio_client.account.messages.create(
                             :from => "+1#{twilio_phone_number}",
                             :to => number_to_send_to,
-                            :body => "congrats"
+                            :body => "Congratulations!"
                           )
 
               else

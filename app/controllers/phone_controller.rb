@@ -2,39 +2,42 @@ class PhoneController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
-  
-  def test
-     account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
-     auth_token = 'e948aaf8caad373ae54918c175fd8786'
-     twilio_phone_number = "3104992061"
-    if (params)['Body'].downcase.delete(" ") == "fun"
-        raw_number = params['From']
-        number_mod = raw_number.tr('/+/-/)/(', '')
-        if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
-              if number_mod.size == 11
-                @processed_num = number_mod.slice(1..10)
-              elsif number_mod.size == 10
-                @processed_num = number_mod.slice(0..9)
-              end
-              if Patient.where(:phone_number => @processed_num).exists?
-                @patient = Patient.where(:phone_number => @processed_num).first
-              else
-                @error = "number_problem_1"
-                render BASE_DIR + "error.xml"
-                return false
-              end
 
-        else
-          @error = "number_problem_2"
+  def test
+
+    if (params)['Body'].downcase.delete(" ") == "fun"
+          raw_number = params['From']
+          number_mod = raw_number.tr('/+/-/)/(', '')
+              if ( number_mod =~ /^1\d{10}$/ ) || ( number_mod =~ /^\d{10}$/ )
+                      if number_mod.size == 11
+                        @processed_num = number_mod.slice(1..10)
+                      elsif number_mod.size == 10
+                        @processed_num = number_mod.slice(0..9)
+                      end
+                      if Patient.where(:phone_number => @processed_num).exists?
+                        @patient = Patient.where(:phone_number => @processed_num).first
+                      else
+                        @error = "number_problem_1"
+                        render BASE_DIR + "error.xml"
+                        return false
+                      end
+
+              else
+                      @error = "number_problem_2"
+                      render BASE_DIR + "error.xml"
+                      return false
+              end
+    else
+          @error = "unrecognized_response_1"
           render BASE_DIR + "error.xml"
           return false
-        end
+    end
 
         number_to_send_to = @patient.phone_number
-
-
+        account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
+        auth_token = 'e948aaf8caad373ae54918c175fd8786'
+        twilio_phone_number = "3104992061"
         @twilio_client = Twilio::REST::Client.new account_sid, auth_token
-        # @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
 
         @twilio_client.account.messages.create(
               :from => "+1#{twilio_phone_number}",

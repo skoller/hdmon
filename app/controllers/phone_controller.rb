@@ -3,7 +3,7 @@ class PhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
   BASE_DIR = "phone/"
   def test
-     account_sid = 'MG7ad8bdb7446dbca9486c71ede31168e9'
+     account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
      auth_token = 'e948aaf8caad373ae54918c175fd8786'
      twilio_phone_number = "3104992061"
     if (params)['Body'].downcase.delete(" ") == "fun"
@@ -28,6 +28,7 @@ class PhoneController < ApplicationController
           render BASE_DIR + "error.xml"
           return false
         end
+        
         number_to_send_to = @patient.phone_number
 
 

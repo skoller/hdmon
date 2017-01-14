@@ -31,9 +31,13 @@ def test
                       @twilio_client.account.messages.create(
                             :from => "+1#{twilio_phone_number}",
                             :to => number_to_send_to,
-                            :body => "Congratulations! You have communicated with HdMon"
+                            :body => "Congratulations!"
                           )
-
+                      @twilio_client.account.messages.create(
+                                :from => "+1#{twilio_phone_number}",
+                                :to => number_to_send_to,
+                                :body => "You have communicated with HdMon"
+                              )
               else
                       @error = "number_problem_2"
                       render BASE_DIR + "error.xml"

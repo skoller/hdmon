@@ -31,7 +31,7 @@ class PhoneController < ApplicationController
         number_to_send_to = @patient.phone_number
 
 
-        client = Twilio::REST::Client.new account_sid, auth_token
+        @twilio_client = Twilio::REST::Client.new account_sid, auth_token
         # @twilio_client = Twilio::REST::Client.new twilio_sid, twilio_token
 
         @twilio_client.account.messages.create(

@@ -31,7 +31,7 @@ def test
                       @twilio_client.account.messages.create(
                             :from => "+1#{twilio_phone_number}",
                             :to => number_to_send_to,
-                            :body => "Congratulations!"
+                            :body => "Congratulations! You have communicated with HdMon"
                           )
 
               else

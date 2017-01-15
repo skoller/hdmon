@@ -28,7 +28,7 @@ gem 'jbuilder', '~> 2.5'
 
 # Use delayed job for running background jobs
 gem 'delayed_job_active_record'
-
+gem 'delayed_job_recurring'
 # Need daemons to start delayed_job
 gem 'daemons'
 # Use Capistrano for deployment

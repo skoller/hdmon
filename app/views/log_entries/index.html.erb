@@ -86,8 +86,9 @@
 		<%= link_to pt_edit_path(:patient_id => @patient.id, :log_root => @log_root) do %>
 		<button class="btn">Edit Password or Phone Number</button>
 		<% end %>
-    <%= button_to log_entries_perform_path(:patient_id => @patient.id) do %>
+    <%= button_to LogEntry.schedule! do %>
 		<button class="btn">Initiate Reminder Texts</button>
+    <%= flash[:alert] = 'text reminders initiated' %>
 		<% end %>
 	<% end %>
 

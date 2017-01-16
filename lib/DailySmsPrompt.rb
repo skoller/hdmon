@@ -1,7 +1,8 @@
-class Sms
+module Recurring
+ class DailySmsPrompt
   include Delayed::RecurringJob
   run_every 1.minute
-  run_at '1:34pm'
+  run_at '7:23pm'
   timezone 'US/Pacific'
   queue 'slow-jobs'
   def perform
@@ -22,4 +23,5 @@ class Sms
                  :body => "You have communicated with HdMon"
                )
   end
+ end
 end

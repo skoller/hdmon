@@ -40,6 +40,7 @@ gem 'prawn'
 gem 'twilio-ruby'
 gem 'client_side_validations', github: 'DavyJonesLocker/client_side_validations', branch: 'rails5'
 gem 'devise'
+gem 'sidetiq'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -2,8 +2,8 @@ module Recurring
  class DailySmsPrompt
   include Delayed::RecurringJob
   run_every 1.minute
-  run_at '7:23pm'
-  timezone 'US/Pacific'
+  run_at '9:35pm'
+  timezone 'US/Central'
   queue 'slow-jobs'
   def perform
     number_to_send_to = '3108090426'

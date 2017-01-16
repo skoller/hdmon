@@ -11,4 +11,11 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w( rails.validations.js )
 
-DailySmsPrompt.schedule!
+namespace :recurring do
+  task init: :environment do
+    # Delete any previously-scheduled recurring jobs
+    # Delayed::Job.where('(handler LIKE ?)', '--- !ruby/object:Recurring::%').destroy_all
+
+    Recurring::DailySmsPrompt.schedule!
+  end
+end

@@ -3,16 +3,16 @@ class SessionsController < ApplicationController
   def new #new_physician_session_login
     if params[:format] == 'physician'
       @ph = true
-      session[:identity_ph] = true
-       session[:identity_pt] = nil
+      # session[:identity_ph] = true
+      #  session[:identity_pt] = nil
       return false
     elsif params[:format] == 'patient'
       @pt = true
-      session[:identity_pt] = true
-      session[:identity_ph] = nil
+      # session[:identity_pt] = true
+      # session[:identity_ph] = nil
       return false
     else
-      flash[:alert] = '@pt/@ph not working'
+      flash[:alert] = 'Something went wrong. Pleaes restart your browser and revisit page.'
       redirect_to home_page_path
     end
   end
@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
    end
 
    def pt_login_allowed_params
-     x = params.require(:session).permit(:password)
+     x = params.permit(:password, :utf8, :authenticity_token, :phone_number, :commit, :pt)
    end
 
    def password_set_params
@@ -31,31 +31,36 @@ class SessionsController < ApplicationController
 
 
     def create
-           if session[:identity_ph] == true
+           if params[:ph]
               ph = Physician.find_by email: params[:session][:email]
-              if ph && ph.authenticate(params[:session][:password]) && (ph.state != (nil || ""))  && (ph.first_name != (nil || "")) && (ph.last_name != (nil || "")) && (ph.specialty != (nil || ""))
+              if ph.authenticate(params[:session][:password]) && (ph.state != (nil || ""))  && (ph.first_name != (nil || "")) && (ph.last_name != (nil || "")) && (ph.specialty != (nil || ""))
                 session[:physician_id] = ph.id
                 session[:identity_ph] = nil
                 redirect_to physician_patients_path(session[:physician_id])
-              elsif ph && ph.authenticate(params[:session][:password]) && ((ph.state == (nil || "")) || (ph.first_name == (nil || "")) || (ph.last_name == (nil || "")) || (ph.specialty == (nil || "")))
+              elsif ph.authenticate(params[:session][:password]) && ((ph.state == (nil || "")) || (ph.first_name == (nil || "")) || (ph.last_name == (nil || "")) || (ph.specialty == (nil || "")))
                 session[:physician_id] = ph.id
                 session[:identity_ph] = nil
                 redirect_to physician_additional_info_path(:id => ph.id)
                 flash[:alert] = 'We still need a few more details about you before you start!'
               else
-                redirect_to new_session_path flash[:alert] = 'Incorrect email/password combination'
+                redirect_to get_new_session_path(:format => 'physician')
+                flash[:alert] = 'Incorrect email/password combination'
               end
-           elsif session[:identity_pt] == true
-              pt = Patient.find_by phone_number: params[:phone_number]
-              if pt && pt.authenticate(params[:password])
+           elsif params[:pt]
+              pt = Patient.find_by phone_number: params[:session][:phone_number]
+              if pt && pt.authenticate(params[:session][:password])
                 session[:patient_id] = pt.id
                 session[:identity_pt] = nil
                 redirect_to physician_patient_log_entries_path(:patient_id => pt.id, :physician_id => pt.physician_id)
               else
-                redirect_to create_session_path(params[:format] == 'patient')
+                redirect_to get_new_session_path(:format => 'patient')
+                flash[:alert] = 'Incorrect email/password combination'
               end
-            end
+          else
+            redirect_to get_new_session_path(:format => 'patient')
+            flash[:alert] = 'Something went wrong! Try loggin in again.'
          end
+       end
 
     def destroy_ph_session
           session[:physician_id] = nil

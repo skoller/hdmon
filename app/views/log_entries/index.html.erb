@@ -42,7 +42,7 @@
           <% end %>
       </td>
       <td><%= log_entry.personal_notes %></td>
-      <td>    
+      <td>
         <%= link_to physician_patient_log_entry_path(@ph, @patient, log_entry) do %>
           <button class="btn">View</button>
         <% end %>
@@ -69,23 +69,26 @@
 	      <button class="btn">&lt;&lt; Return to Patient Listing</button>
 	  <% end %>
 	<% end %>
-	
+
 		<%= link_to new_physician_patient_log_entry_path(@ph, @patient)  do %>
 	      <button class="btn">Create New Entry</button>
 	  <% end %>
 
-	
+
 		<%= link_to physician_patient_log_entries_path(@ph, @patient, format: "pdf") do %>
 	      <button class="btn">Generate Printable Log (PDF)</button>
 	  <% end %>
-	
+
 	<% if @patient_view %>
-		<%= link_to pt_show_path(:patient_id => @patient.id) do %>	
+		<%= link_to pt_show_path(:patient_id => @patient.id) do %>
 		<button class="btn">View Account Information</button>
 		<% end %>
-		<%= link_to pt_edit_path(:patient_id => @patient.id, :log_root => @log_root) do %>	
+		<%= link_to pt_edit_path(:patient_id => @patient.id, :log_root => @log_root) do %>
 		<button class="btn">Edit Password or Phone Number</button>
 		<% end %>
+    <%= button_to log_entries_perform_path(:patient_id => @patient.id) do %>
+		<button class="btn">Initiate Reminder Texts</button>
+		<% end %>
 	<% end %>
-			
+
 </div>

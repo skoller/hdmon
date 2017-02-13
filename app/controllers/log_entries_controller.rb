@@ -27,8 +27,8 @@ class LogEntriesController < ApplicationController
 
 
   def show
-    @ph = Physician.find(params[:physician_id])
-    @patient = @ph.patients.find(params[:patient_id])
+    @patient = Patient.find(params[:patient_id])
+    @ph = @patient.physician_id
     @log_entry = @patient.log_entries.find(params[:id])
   end
 
@@ -48,7 +48,11 @@ class LogEntriesController < ApplicationController
 
   def log_entry_allowed_params
     params.require(:log_entry).permit(:id, :date, :location, :food, :binge, :vomit,
-    :laxative, :personal_notes)
+    :laxative, :personal_notes, :password)
+  end
+
+  def log_entry_params_for_destroy
+    params.permit(:id, :patient_id, :physician_id)
   end
 
   def patient_id_param
@@ -65,8 +69,7 @@ class LogEntriesController < ApplicationController
     end
     @log_entry = @patient.log_entries.build(log_entry_allowed_params)
     @log_entry.patient_id = current_patient.id
-    byebug
-    @log_entry.save validations: false
+    @log_entry.save
     if @log_entry
       redirect_to physician_patient_log_entry_path(@ph, @patient, @log_entry), notice: 'Log Entry was successfully created.'
       return false
@@ -78,10 +81,10 @@ class LogEntriesController < ApplicationController
 
   def update
     @ph = Physician.find(params[:physician_id])
-    @patient = @ph.patients.find(params[:patient_id])
-    @log_entry = @patient.log_entries.find(log_entry_allowed_params)
+    @patient = Patient.find(params[:patient_id])
+    @log_entry = @patient.log_entries.find(params[:id])
 
-    if @log_entry.update_attributes(params[:log_entry])
+    if @log_entry.update_attributes(log_entry_allowed_params)
       redirect_to physician_patient_log_entry_path(@ph, @patient, @log_entry), notice: 'Log entry was successfully updated.'
       return false
     else
@@ -91,9 +94,9 @@ class LogEntriesController < ApplicationController
   end
 
   def destroy
-
-    @patient = current_patient
-    @log_entry = @patient.log_entries.find(log_entry_allowed_params)
+    @ph = Physician.find(params[:physician_id])
+    @patient = Patient.find(params[:patient_id])
+    @log_entry = @patient.log_entries.find(params[:id])
     @log_entry.destroy
     redirect_to physician_patient_log_entries_path(@ph, @patient)
     return false

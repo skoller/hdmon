@@ -47,17 +47,17 @@
       </td>
       <td><%= log_entry.personal_notes %></td>
       <td>
-        <%= link_to physician_patient_log_entry_path(@patient, log_entry) do %>
+        <%= link_to physician_patient_log_entry_path(:id => log_entry.id) do %>
           <button class="btn">View</button>
         <% end %>
       </td>
       <td>
-        <%= link_to edit_physician_patient_log_entry_path(@patient, log_entry)  do %>
+        <%= link_to edit_physician_patient_log_entry_path(:id => log_entry.id)  do %>
           <button class="btn btn-warning">Edit</button>
         <% end %>
       </td>
       <td>
-        <%= link_to physician_patient_log_entry_path(@patient, log_entry), confirm: 'Are you sure you want to delete this log entry?', method: :delete  do %>
+        <%= link_to physician_patient_log_entry_path(:id => log_entry.id), confirm: 'Are you sure you want to delete this log entry?', method: :delete  do %>
           <button class="btn btn-danger">Delete</button>
         <% end %>
       </td>
@@ -82,7 +82,7 @@
 
 
 	<% if @patient_view %>
-		<%= link_to pt_show_path(:patient_id => @patient.id) do %>
+		<%= link_to pt_show_path(:patient_id => @patient.id, :physcian_id => @ph.id) do %>
 		<button class="btn">View Account Information</button>
 		<% end %>
 		<%= link_to pt_edit_path(:patient_id => @patient.id, :log_root => @log_root) do %>

@@ -1,5 +1,5 @@
 class Patient < ApplicationRecord
-  #attr_accessor :phone_number, :password, :password_confirmation, :first_name, :last_name, :dob, :sex, :diagnosis, :archive
+
    has_secure_password
    validates :phone_number, presence: true
   #  validates_presence_of :password, :on => :create
@@ -14,9 +14,11 @@ class Patient < ApplicationRecord
   #        validates_presence_of :dob, :on => :create, :format => { :with => /^(0[1-9]{1}|[12]{1}[0-9]{1}|3[01]{1}).{1}(0[1-9]{1}|1[0-2]{1}).{1}([12]{1}[0-9]{3})$/, :message => "MM-DD-YYYY format required" }
   #        validates_presence_of :diagnosis, :on => :create
 
-   has_many :log_entries
+   has_many :log_entries, dependent: :destroy
+   accepts_nested_attributes_for :log_entries
    has_one :convo_handler
    has_one :physician
+
 
    def base_date
      unless @base_date

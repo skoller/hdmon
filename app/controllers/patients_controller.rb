@@ -1,6 +1,6 @@
 class PatientsController < ApplicationController
 
-  # before_action :authenticate_user
+  before_action :authenticate_user
 
   def index
     if ((session[:physician_id]).to_s && ((params[:physician_id]) == (session[:physician_id]).to_s)) || (session[:physician_id] == 1)
@@ -79,7 +79,22 @@ class PatientsController < ApplicationController
         @password_random_suffix = rand(999999).to_s.center(6, rand(9).to_s)
         if @patient.save
           session[:patient_start] = @patient.id
-          ##### run a method that sends the start code to the patient
+          number_to_send_to = @patient.phone_number
+          account_sid = 'AC0e331b7fa11f13be73a32e5311a74969'
+          auth_token = 'e948aaf8caad373ae54918c175fd8786'
+          twilio_phone_number = "3104992061"
+
+          @twilio_client = Twilio::REST::Client.new account_sid, auth_token
+          @twilio_client.account.messages.create(
+                       :from => "+1#{twilio_phone_number}",
+                       :to => number_to_send_to,
+                       :body => "Congratulations!"
+                     )
+                 @twilio_client.account.messages.create(
+                       :from => "+1#{twilio_phone_number}",
+                       :to => number_to_send_to,
+                       :body => "Glad to see you have joined HdMon! HdMon will text you every evening between 8-9pm to ask if you had a headache that day. Just respond to the texts and that's it! Your doctor will be able to see your responses at your next visit to help guide your treatment. If you would like to login online to view your log of responses, go to wwww.hdmon etc, select signup, and enter start code: #{@patient.start_code} complete the account setup."
+                     )
           redirect_to physician_patients_path
           return false
         else
@@ -163,7 +178,7 @@ class PatientsController < ApplicationController
         elsif
           redirect_to new_patient_password_setup_path(@pt.id => :pt_id)
         end
-        else
+      else
           redirect to home_page_path
           flash[:notice] = 'Something went wrong!'
       end

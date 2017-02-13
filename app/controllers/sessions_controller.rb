@@ -80,25 +80,26 @@ class SessionsController < ApplicationController
 
 
 
-     def new_patient_start_code_entry
+     def signup_start_code_entry
      end
 
-     def new_patient_code_verification
+     def signup_code_verification
                pt_phone_number = Patient.where(:phone_number => params[:phone_number]).first
                pt_code = Patient.where(:start_code => params[:start_code]).first
+               byebug
         unless pt_phone_number == nil || pt_code == nil
                  if pt_phone_number.signup_status == "returning"
-                   redirect_to new_patient_session_login_path
+                   redirect_to patient_login_path
                  elsif pt_code.phone_number == pt_phone_number.phone_number
                    session[:start] = pt_code.id
                    redirect_to new_patient_password_setup_path(:pt_id => pt_code.id)
                  elsif pt_code.phone_number && !pt_phone_number.phone_number
-                   redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the start code you provided."
+                   redirect_to signup_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the start code you provided."
                  elsif !pt_code.phone_number && pt_phone_number.phone_number
-                   redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number you provided."
+                   redirect_to signup_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number you provided."
                  end
         else
-            redirect_to new_patient_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number or start code you provided."
+            redirect_to signup_start_code_entry_path #flash[:alert] = "Hdmon does not recognize the phone number or start code you provided."
         end
       end
 

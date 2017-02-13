@@ -12,8 +12,8 @@ Hdmon::Application.routes.draw do
   get "ph_deactivate" => "physicians#destroy_archive", :as => "destroy_archive"
   get "pt_archive/:physician_id/:id" => "patients#archive", :as => "archive_pt"
   get "physician/:physician_id/patient_archive" => "physicians#pt_archive_index", :as => "pt_archive_index"
-  post "code" => "sessions#new_patient_code_verification", :as => "patient_code"
-  get "new_patient" => "sessions#new_patient_start_code_entry", :as => "new_patient_start_code_entry"
+  post "code" => "sessions#signup_code_verification", :as => "patient_code"
+  get "signup" => "sessions#signup_start_code_entry", :as => "signup_start_code_entry"
   get "new_patient_password_setup/:pt_id" => "sessions#new_patient_password_setup", :as => "new_patient_password_setup"
   put "p_set/:pt_id" => "sessions#password_set", :as => "password_set"
 

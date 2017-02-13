@@ -10,12 +10,3 @@ Rails.application.config.assets.version = '1.0'
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w( rails.validations.js )
-
-namespace :recurring do
-  task init: :environment do
-    # Delete any previously-scheduled recurring jobs
-    # Delayed::Job.where('(handler LIKE ?)', '--- !ruby/object:Recurring::%').destroy_all
-
-    Recurring::DailySmsPrompt.schedule!
-  end
-end

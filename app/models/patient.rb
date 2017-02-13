@@ -9,7 +9,7 @@ class Patient < ApplicationRecord
   #        validates_confirmation_of :password, :on => :create
   #        validates_presence_of :phone_number, :length => { :is => 10 }
   #        validates_presence_of :phone_number, :format => { :with => /^\d{10}$/, :message => "Must be 10 digits and contain no parathesis or dashes" }
-  #        validates_uniqueness_of :phone_number
+   validates_uniqueness_of :phone_number
   #        validates_presence_of :sex, :on => :create
   #        validates_presence_of :dob, :on => :create, :format => { :with => /^(0[1-9]{1}|[12]{1}[0-9]{1}|3[01]{1}).{1}(0[1-9]{1}|1[0-2]{1}).{1}([12]{1}[0-9]{3})$/, :message => "MM-DD-YYYY format required" }
   #        validates_presence_of :diagnosis, :on => :create

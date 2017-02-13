@@ -172,6 +172,7 @@ class PatientsController < ApplicationController
     def patient_welcome
       @pt = Patient.find(params[:patient_id])
       @ph = Physician.find(@pt.physician_id)
+      session[:patient_id]
       if @pt
         @pt.signup_status = 'returning'
         if @pt.save

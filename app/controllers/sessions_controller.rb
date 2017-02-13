@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
                 flash[:alert] = 'We still need a few more details about you before you start!'
               else
                 redirect_to get_new_session_path(:format => 'physician')
-                flash[:alert] = 'Incorrect email/password combination'
+                flash[:alert] = 'Incorrect credentials'
               end
            elsif params[:pt]
               pt = Patient.find_by phone_number: params[:session][:phone_number]
@@ -54,7 +54,7 @@ class SessionsController < ApplicationController
                 redirect_to physician_patient_log_entries_path(:patient_id => pt.id, :physician_id => pt.physician_id)
               else
                 redirect_to get_new_session_path(:format => 'patient')
-                flash[:alert] = 'Incorrect email/password combination'
+                flash[:alert] = 'Incorrect credentials'
               end
           else
             redirect_to get_new_session_path(:format => 'patient')
@@ -86,10 +86,10 @@ class SessionsController < ApplicationController
      def signup_code_verification
                pt_phone_number = Patient.where(:phone_number => params[:phone_number]).first
                pt_code = Patient.where(:start_code => params[:start_code]).first
-               byebug
         unless pt_phone_number == nil || pt_code == nil
                  if pt_phone_number.signup_status == "returning"
-                   redirect_to patient_login_path
+                   redirect_to get_new_session_path(:format => 'patient')
+                   flash[:alert] = 'You already have setup an account. Please login here.'
                  elsif pt_code.phone_number == pt_phone_number.phone_number
                    session[:start] = pt_code.id
                    redirect_to new_patient_password_setup_path(:pt_id => pt_code.id)
@@ -105,6 +105,7 @@ class SessionsController < ApplicationController
 
      def new_patient_password_setup
        @patient = Patient.find(params[:pt_id])
+       session[:patient_id]
      end
 
        def password_set
